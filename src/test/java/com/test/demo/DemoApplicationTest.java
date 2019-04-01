@@ -12,6 +12,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
@@ -114,5 +116,15 @@ public class DemoApplicationTest {
 
         logRepository.save(logProcessService.processEventLog(eventLog));
         assertThat(logRepository.findByDbId("ddd133").isAlert()).isTrue();
+    }
+
+
+    @Test
+    public void readFile() throws IOException {
+        ClassLoader classLoader = getClass().getClassLoader();
+        File file = new File(classLoader.getResource("file.log").getFile());
+        logReaderService.read(file);
+
+        assertThat(logRepository.findByDbId("scsmbstgra1491377495217").getType()).isEqualTo("APPLICATION_LOG");
     }
 }
